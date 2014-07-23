@@ -1,0 +1,31 @@
+apply plugin: 'java'
+//apply plugin: 'war'
+
+archivesBaseName = 'jfinal-fork'
+
+
+dependencies {
+    compile (
+        libraries.'spring-context',
+        libraries.'jsp-api',
+        libraries.'servlet-api',
+        libraries.'druid',
+        libraries.'c3p0',
+        libraries.'ehcache-core',
+        libraries.'velocity',
+        libraries.'freemarker',
+        libraries.'jstl-api',
+
+	libraries.'junit'
+    )
+
+    // 把父项目的libs下的所有jar和当前项目的libs下的所有jar都搞进来
+    // 因为有些时候 maven 库中有些jar是不存在的，这些jar就得手工维护了
+    ext.jarTree = fileTree(dir: 'libs', include: '**/*.jar')
+    ext.rootProjectLibs = new File(rootProject.rootDir, 'libs').getAbsolutePath()
+    ext.jarTree += fileTree(dir: rootProjectLibs, include: '**/*.jar')
+
+    compile jarTree
+}
+
+
